@@ -1,7 +1,9 @@
 # Build
 # docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD) --build-arg WANDB_KEY=<wandb> --build-arg HF_TOKEN=<hf> -f Dockerfile -t aluno_bryan-openr1:latest .
-# Run
+# Run (local)
 # sudo docker run --gpus '"device=0"' -v ~/.cache/huggingface:/root/.cache/huggingface -e MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B aluno_bryan-openr1:latest
+# Run (dgx)
+# docker run --gpus '"device=5"' -v /raid/bryan/huggingface:/root/.cache/huggingface -e MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B -e MODEL_ARGS='dtype=float16,max_model_length=32768,gpu_memory_utilisation=0.9' aluno_bryan-openr1:latest
 
 # Use CUDA 12.4 base image
 FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
