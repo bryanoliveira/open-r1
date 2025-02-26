@@ -12,6 +12,15 @@ FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 
+# Add build arguments and set environment variables
+ARG GIT_COMMIT
+ARG WANDB_KEY
+ARG HF_TOKEN
+
+ENV GIT_COMMIT=$GIT_COMMIT
+ENV WANDB_API_KEY=$WANDB_KEY
+ENV HUGGING_FACE_HUB_TOKEN=$HF_TOKEN
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
