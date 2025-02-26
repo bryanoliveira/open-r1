@@ -93,7 +93,7 @@ def gpqa_prompt_fn(line, task_name: str = None):
 
 
 # Define tasks
-generation_size = os.environ.get("GENERATION_SIZE", 32768)
+generation_size = int(os.environ.get("GENERATION_SIZE", 32768))
 aime24 = LightevalTaskConfig(
     name="aime24",
     suite=["custom"],
