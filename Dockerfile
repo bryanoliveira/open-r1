@@ -46,6 +46,9 @@ RUN GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]" --link-mode=copy --no-build
 ENV MODEL_ARGS="dtype=bfloat16,max_model_length=32768,gpu_memory_utilisation=0.8"
 ENV TASK="aime24"
 ENV OUTPUT_DIR="/app/data/evals"
+ENV BACKEND="vllm"
+ENV EXTRA=""
+ENV GENERATION_SIZE="32768"
 
 # Entrypoint that runs lighteval with the provided model
-ENTRYPOINT ["sh", "-c", "lighteval vllm pretrained=${MODEL},${MODEL_ARGS} \"custom|${TASK}|0|0\" --custom-tasks src/open_r1/evaluate.py --use-chat-template --output-dir ${OUTPUT_DIR}/${MODEL}"]
+ENTRYPOINT ["sh", "-c", "lighteval ${BACKEND} pretrained=${MODEL},${MODEL_ARGS} \"custom|${TASK}|0|0\" --custom-tasks src/open_r1/evaluate.py --use-chat-template --output-dir ${OUTPUT_DIR}/${MODEL} ${EXTRA}"]

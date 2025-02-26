@@ -15,6 +15,7 @@
 """Custom evaluation tasks for LightEval."""
 
 import random
+import os
 
 from lighteval.metrics.dynamic_metrics import (
     ExprExtractionConfig,
@@ -92,6 +93,7 @@ def gpqa_prompt_fn(line, task_name: str = None):
 
 
 # Define tasks
+generation_size = os.environ.get("GENERATION_SIZE", 32768)
 aime24 = LightevalTaskConfig(
     name="aime24",
     suite=["custom"],
@@ -102,7 +104,7 @@ aime24 = LightevalTaskConfig(
     evaluation_splits=["train"],
     few_shots_split=None,
     few_shots_select=None,
-    generation_size=32768,
+    generation_size=generation_size,
     metric=[expr_gold_metric],
     version=1,
 )
@@ -116,7 +118,7 @@ aime25 = LightevalTaskConfig(
     evaluation_splits=["train"],
     few_shots_split=None,
     few_shots_select=None,
-    generation_size=32768,
+    generation_size=generation_size,
     metric=[expr_gold_metric],
     version=1,
 )
@@ -130,7 +132,7 @@ math_500 = LightevalTaskConfig(
     evaluation_splits=["test"],
     few_shots_split=None,
     few_shots_select=None,
-    generation_size=32768,
+    generation_size=generation_size,
     metric=[latex_gold_metric],
     version=1,
 )
@@ -144,7 +146,7 @@ gpqa_diamond = LightevalTaskConfig(
     evaluation_splits=["train"],
     few_shots_split=None,
     few_shots_select=None,
-    generation_size=32768,  # needed for reasoning models like R1
+    generation_size=generation_size,  # needed for reasoning models like R1
     metric=[gpqa_metric],
     stop_sequence=[],  # no stop sequence, will use eos token
     trust_dataset=True,
