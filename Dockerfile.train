@@ -1,9 +1,9 @@
 # Build
 # docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD) --build-arg WANDB_KEY=<wandb> --build-arg HF_TOKEN=<hf> -f Dockerfile.train -t aluno_bryan-openr1_train:latest .
 # Run (local)
-# sudo docker run --gpus '"device=0"' -v ~/.cache/huggingface:/root/.cache/huggingface -v ./data:/app/data -e CONFIG="recipes/Qwen2.5-0.5B-Instruct/config_simple_rl.yaml" -e NUM_PROCESSES=1 aluno_bryan-openr1_train:latest
+# sudo docker run --gpus '"device=0"' -v ~/.cache/huggingface:/root/.cache/huggingface -v ./data:/app/data -e RECIPE="recipes/accelerate_configs/zero2_nobf16.yaml" -e CONFIG="recipes/Qwen2.5-0.5B-Instruct/config_simple_rl.yaml" -e NUM_PROCESSES=1 aluno_bryan-openr1_train:latest
 # Run (dgx)
-# docker run --gpus '"device=5"' -d --rm -v /raid/bryan/huggingface:/root/.cache/huggingface -v /raid/bryan/openr1/data:/app/data -e CONFIG="recipes/Qwen2.5-0.5B-Instruct/config_simple_rl.yaml" -e NUM_PROCESSES=1 aluno_bryan-openr1_train:latest
+# docker run --gpus '"device=5"' -d --rm -v /raid/bryan/huggingface:/root/.cache/huggingface -v /raid/bryan/openr1/data:/app/data -e RECIPE="recipes/accelerate_configs/zero2_nobf16.yaml" -e CONFIG="recipes/Qwen2.5-0.5B-Instruct/config_simple_rl.yaml" -e NUM_PROCESSES=1 aluno_bryan-openr1_train:latest
 
 # Use CUDA 12.4 base image
 FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
@@ -37,9 +37,13 @@ RUN uv pip install --upgrade pip --link-mode=copy && \
 
 # Copy dependency files first
 WORKDIR /app
-COPY . .
+COPY setup.py setup.cfg ./
 
-# Install project dependencies
+# Install only the dependencies without the package
+RUN uv pip install --no-deps --dry-run ".[dev]" | grep -i "collecting" | cut -d " " -f2 | uv pip install --link-mode=copy -r /dev/stdin
+
+# Install project
+COPY . .
 RUN GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]" --link-mode=copy --no-build-isolation
 
 # Add build arguments
