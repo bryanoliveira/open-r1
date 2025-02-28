@@ -44,17 +44,21 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN uv pip install --upgrade pip --link-mode=copy && \
     uv pip install vllm==0.7.2 setuptools wheel --link-mode=copy
 
-# Copy project files
+# Copy dependency files first
 WORKDIR /app
-COPY . .
+COPY pyproject.toml .
+COPY setup.py .
+COPY setup.cfg .
 
 # Install project dependencies
 RUN GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]" --link-mode=copy --no-build-isolation
 
+# Copy the rest of the project
+COPY . .
+
 # Default environment variables for training
 ENV RECIPE="recipes/accelerate_configs/zero2.yaml"
 ENV CONFIG="recipes/Qwen2.5-1.5B-Instruct/grpo/config_demo.yaml"
-ENV NUM_GPUS=8
 ENV NUM_PROCESSES=7
 ENV EXTRA=""
 

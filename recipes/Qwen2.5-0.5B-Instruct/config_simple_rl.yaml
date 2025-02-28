@@ -51,6 +51,8 @@ reward_funcs:
 reward_weights:
 - 1.0
 - 1.0
+- 1.0
+- 1.0
 save_strategy: "no"
 seed: 42
 warmup_ratio: 0.1
