@@ -38,9 +38,10 @@ RUN uv pip install --upgrade pip --link-mode=copy && \
 # Copy dependency files first
 WORKDIR /app
 COPY setup.py setup.cfg ./
+RUN python3 setup.py egg_info
 
 # Install only the dependencies without the package
-RUN uv pip install --no-deps --dry-run ".[dev]" | grep -i "collecting" | cut -d " " -f2 | uv pip install --link-mode=copy -r /dev/stdin
+RUN cat *.egg-info/requires.txt | grep -v '^\[' | uv pip install --link-mode=copy -r /dev/stdin
 
 # Install project
 COPY . .
