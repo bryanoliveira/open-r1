@@ -46,7 +46,6 @@ RUN uv pip install --upgrade pip --link-mode=copy && \
 
 # Copy dependency files first
 WORKDIR /app
-COPY pyproject.toml .
 COPY setup.py .
 COPY setup.cfg .
 
