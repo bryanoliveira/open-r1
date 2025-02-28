@@ -33,7 +33,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Install dependencies
 RUN uv pip install --upgrade pip --link-mode=copy && \
-    uv pip install vllm==0.7.2 setuptools wheel --link-mode=copy
+    uv pip install vllm==0.7.2 wandb setuptools wheel --link-mode=copy
 
 # Copy dependency files first
 WORKDIR /app
