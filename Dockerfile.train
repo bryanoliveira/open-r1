@@ -12,15 +12,6 @@ FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 
-# Add build arguments and set environment variables
-ARG GIT_COMMIT
-ARG WANDB_KEY
-ARG HF_TOKEN
-
-ENV GIT_COMMIT=$GIT_COMMIT
-ENV WANDB_API_KEY=$WANDB_KEY
-ENV HUGGING_FACE_HUB_TOKEN=$HF_TOKEN
-
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -46,16 +37,19 @@ RUN uv pip install --upgrade pip --link-mode=copy && \
 
 # Copy dependency files first
 WORKDIR /app
-COPY setup.py .
-COPY setup.cfg .
+COPY . .
 
 # Install project dependencies
 RUN GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]" --link-mode=copy --no-build-isolation
 
-# Copy the rest of the project
-COPY . .
-
+# Add build arguments
+ARG GIT_COMMIT
+ARG WANDB_KEY
+ARG HF_TOKEN
 # Default environment variables for training
+ENV GIT_COMMIT=$GIT_COMMIT
+ENV WANDB_API_KEY=$WANDB_KEY
+ENV HUGGING_FACE_HUB_TOKEN=$HF_TOKEN
 ENV RECIPE="recipes/accelerate_configs/zero2.yaml"
 ENV CONFIG="recipes/Qwen2.5-1.5B-Instruct/grpo/config_demo.yaml"
 ENV NUM_PROCESSES=7
