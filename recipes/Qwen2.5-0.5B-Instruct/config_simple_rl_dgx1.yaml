@@ -2,7 +2,7 @@
 model_name_or_path: Qwen/Qwen2.5-0.5B-Instruct
 model_revision: main
 torch_dtype: float16
-attn_implementation: flash_attention_2
+attn_implementation: sdpa
 
 # Data training arguments
 dataset_name: DigitalLearningGmbH/MATH-lighteval
@@ -12,6 +12,7 @@ system_prompt: "A conversation between User and Assistant. The user asks a quest
 
 # GRPO trainer config
 bf16: false
+fp16: true
 use_vllm: false
 vllm_device: auto
 vllm_gpu_memory_utilization: 0.7
